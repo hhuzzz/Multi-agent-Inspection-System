@@ -62,8 +62,6 @@
 ## 快速开始
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env
 ```
@@ -98,16 +96,17 @@ inputs={
 
 `images` 支持本地图片路径、HTTP 图片 URL 或 data URL。
 
-## 当前结构
+## 项目结构
 
 ```text
 src/inspection_system/
-├── agents/
-│   ├── scene_analysis.py
-│   ├── defect_detection.py
-│   ├── reinspection.py
-│   └── risk_alert.py
-├── openai_client.py
-├── pipeline.py
-└── schemas.py
+├── agents/                      # Agent 模块
+│   ├── base.py                  # Agent 基类
+│   ├── scene_analysis.py        # 场景分析 Agent（识别对象）
+│   ├── defect_detection.py      # 缺陷检测 Agent（检测缺陷）
+│   ├── reinspection.py          # 复检 Agent（复核结果）
+│   └── risk_alert.py           # 风险报警 Agent（生成报告）
+├── openai_client.py             # OpenAI API 封装
+├── pipeline.py                  # 巡检流水线编排
+└── schemas.py                   # 数据模型定义
 ```
