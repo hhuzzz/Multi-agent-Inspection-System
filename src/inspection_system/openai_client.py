@@ -65,6 +65,7 @@ class OpenAIClient:
         ]
 
         try:
+            print(system_prompt)
             print("大模型推理开始。", flush=True)
             response = self.client.chat.completions.create(
                 model=self.model,
