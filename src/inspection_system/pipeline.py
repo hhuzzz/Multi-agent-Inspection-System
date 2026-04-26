@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 
 from inspection_system.agents import (
     DefectDetectionAgent,
@@ -28,19 +29,23 @@ class InspectionPipeline:
         result = InspectionResult(task=task, outputs=[])
 
         total = len(self.agents)
+        pipeline_start = time.perf_counter()
         print(f"[Pipeline] 开始巡检任务: {task.task_id} -> {task.target}", flush=True)
 
         for index, agent in enumerate(self.agents, start=1):
             print(f"\n[{index}/{total}] 开始执行 {agent.name}", flush=True)
 
+            agent_start = time.perf_counter()
             try:
                 output = agent.run(result)
             except Exception as exc:
-                print(f"[{index}/{total}] {agent.name} 执行失败: {exc}", flush=True)
+                elapsed = time.perf_counter() - agent_start
+                print(f"[{index}/{total}] {agent.name} 执行失败，耗时 {elapsed:.2f}s: {exc}", flush=True)
                 raise
 
+            elapsed = time.perf_counter() - agent_start
             result.outputs.append(output)
-            print(f"[{index}/{total}] {agent.name} 执行完成", flush=True)
+            print(f"[{index}/{total}] {agent.name} 执行完成，耗时 {elapsed:.2f}s", flush=True)
             print(json.dumps(output.model_dump(mode="json"), ensure_ascii=False, indent=2), flush=True)
 
             if isinstance(agent, SceneAnalysisAgent) and _should_skip_after_scene(output):
@@ -50,7 +55,8 @@ class InspectionPipeline:
                 )
                 break
 
-        print("\n[Pipeline] 巡检任务执行完成", flush=True)
+        total_elapsed = time.perf_counter() - pipeline_start
+        print(f"\n[Pipeline] 巡检任务执行完成，总耗时 {total_elapsed:.2f}s", flush=True)
         return result
 
 

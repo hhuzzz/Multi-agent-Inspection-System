@@ -66,15 +66,16 @@ class OpenAIClient:
 
         try:
             print(system_prompt)
-            print("大模型推理开始。", flush=True)
+            # print("大模型推理开始。", flush=True)
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 response_format={"type": "json_object"},
                 temperature=0,
                 max_tokens=1200,
+                extra_body={"enable_thinking": False},
             )
-            print("大模型推理完成。", flush=True)
+            # print("大模型推理完成。", flush=True)
         except Exception as exc:
             raise RuntimeError(
                 "OpenAI-compatible chat completion request failed. "

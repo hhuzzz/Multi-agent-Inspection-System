@@ -20,15 +20,15 @@ def main() -> None:
         target="隧道 K12+300 区段",
         description="对指定隧道区段进行巡检，判断是否存在结构或环境风险。",
         inputs={
-            "images": ["data/2.jpg"],
+            "images": ["data/1.jpg"],
             "notes": "示例输入。真实使用时可放图片路径、检测文本、传感器摘要等。",
         },
     )
 
     pipeline = InspectionPipeline()
     result = pipeline.run(task)
-    print("\n========== 最终完整结果 ==========", flush=True)
-    print(json.dumps(result.model_dump(mode="json"), ensure_ascii=False, indent=2))
+    # print("\n========== 最终完整结果 ==========", flush=True)
+    # print(json.dumps(result.model_dump(mode="json"), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
