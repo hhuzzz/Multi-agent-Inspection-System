@@ -27,8 +27,8 @@ def main() -> None:
 
     pipeline = InspectionPipeline()
     result = pipeline.run(task)
-    print("\n========== 最终完整结果 ==========", flush=True)
-    print(json.dumps(result.model_dump(mode="json"), ensure_ascii=False, indent=2))
+    # print("\n========== 最终完整结果 ==========", flush=True)
+    # print(json.dumps(result.model_dump(mode="json"), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

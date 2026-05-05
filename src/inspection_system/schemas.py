@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -26,6 +26,11 @@ DefectCategory = Literal[
 ]
 
 ACTIONABLE_OBJECTS = {"墙壁", "电缆", "变电箱"}
+DEFECTS_BY_OBJECT: dict[str, list[DefectCategory]] = {
+    "墙壁": ["墙壁裂缝", "墙壁渗水", "墙壁剥落", "墙壁鼓包变形"],
+    "电缆": ["电缆绝缘破损", "电缆松脱下垂", "电缆老化开裂", "电缆烧蚀过热"],
+    "变电箱": ["变电箱箱体锈蚀", "变电箱箱门异常", "变电箱进水受潮", "变电箱接线裸露"],
+}
 
 
 class AgentOutput(StrictModel):
@@ -40,6 +45,11 @@ class InspectionTask(StrictModel):
     target: str
     description: str
     inputs: dict[str, Any]
+
+
+class AgentInput(StrictModel):
+    task: InspectionTask
+    previous_output: Optional[AgentOutput] = None
 
 
 class InspectionResult(StrictModel):
