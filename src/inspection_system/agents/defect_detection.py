@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from inspection_system.agents.base import BaseAgent
+from inspection_system.openai_client import OpenAIClient
 from inspection_system.schemas import DEFECTS_BY_OBJECT, AgentOutput, InspectionResult
 
 
@@ -8,6 +9,25 @@ class DefectDetectionAgent(BaseAgent):
     name = "DefectDetectionAgent"
     use_images = True
     role = "你只负责根据场景分析结果和图像输出 defect_categories。"
+
+    def __init__(self, client: OpenAIClient) -> None:
+        super().__init__(client)
+        self.re_examine_context: dict | None = None
+
+    def build_user_prompt(self, result: InspectionResult) -> str:
+        prompt = super().build_user_prompt(result)
+        if self.re_examine_context:
+            uncertain = self.re_examine_context.get("uncertain_defects", [])
+            if uncertain:
+                prompt += (
+                    f"\n\n[重新检测请求]\n"
+                    f"以下缺陷在复检阶段被标记为\"证据不充分\"，请结合图片重点重新检查：\n"
+                    f"{'、'.join(uncertain)}\n"
+                    f"如果你认为某个缺陷确实存在，请保留在 defect_categories 中；"
+                    f"如果你也认为无法确认，则不要输出。"
+                )
+            self.re_examine_context = None
+        return prompt
 
     def postprocess_output(self, output: AgentOutput, result: InspectionResult) -> AgentOutput:
         output.objects = _previous_objects(result)
