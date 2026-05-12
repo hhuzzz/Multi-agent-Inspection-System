@@ -7,11 +7,9 @@ from inspection_system.schemas import AgentOutput, InspectionResult
 class RiskAlertAgent(BaseAgent):
     name = "RiskAlertAgent"
     role = (
-        "你只负责根据 previous_output 输出 summary 报告，"
+        "你只根据复检 Agent 的 previous_output 输出 summary，"
         "概括检测对象、复检后的缺陷类别和风险建议。"
-        "输入的 previous_output 是复检 Agent 的输出。"
-        "必须将 previous_output.objects 原样保留到 objects 字段，"
-        "并将 previous_output.defect_categories 原样保留到 defect_categories 字段。"
+        "objects 和 defect_categories 必须原样保留 previous_output 的值。"
     )
 
     def postprocess_output(self, output: AgentOutput, result: InspectionResult) -> AgentOutput:

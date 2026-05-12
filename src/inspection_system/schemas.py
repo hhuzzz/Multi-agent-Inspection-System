@@ -37,6 +37,7 @@ class AgentOutput(StrictModel):
     agent_name: str
     objects: list[ObjectCategory] = Field(default_factory=list)
     defect_categories: list[DefectCategory] = Field(default_factory=list)
+    uncertain_defects: list[str] = Field(default_factory=list)
     summary: str = ""
 
 
