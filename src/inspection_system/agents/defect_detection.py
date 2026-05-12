@@ -59,16 +59,7 @@ class DefectDetectionAgent(BaseAgent):
             "如果图像正常、没有明确可见缺陷，defect_categories 必须输出空数组，不要编造缺陷。"
             "宁可输出空数组，也不要为了匹配类别而强行输出缺陷。"
         )
-        return (
-            f"你是 {self.name}。{role}"
-            "你必须只输出符合 AgentOutput schema 的结构化结果。"
-            "输入只包含任务信息和上一个 Agent 的 previous_output。"
-            "后续 Agent 应保留 previous_output 中仍然有效的 objects 和 defect_categories，"
-            "并只更新自己负责判断的字段。"
-            "当前 Agent 不负责且没有上下文依据的字段必须留空数组或空字符串。"
-            "如果没有明确结果，允许输出空数组或空字符串，不要编造。"
-            "不要输出 Markdown，不要输出多余字段。"
-        )
+        return self._format_system_prompt(role)
 
 
 def _previous_objects(result: InspectionResult) -> list[str]:

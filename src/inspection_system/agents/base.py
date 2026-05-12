@@ -38,15 +38,15 @@ class BaseAgent:
         return json.dumps(agent_input.model_dump(mode="json"), ensure_ascii=False, indent=2)
 
     def system_prompt(self, result: InspectionResult | None = None) -> str:
+        return self._format_system_prompt(self.role)
+
+    def _format_system_prompt(self, role: str) -> str:
         return (
-            f"你是 {self.name}。{self.role}"
-            "你必须只输出符合 AgentOutput schema 的结构化结果。"
+            f"你是 {self.name}。{role}"
+            "只输出符合 AgentOutput schema 的结构化结果，不要 Markdown 或多余字段。"
             "输入只包含任务信息和上一个 Agent 的 previous_output。"
-            "后续 Agent 应保留 previous_output 中仍然有效的 objects 和 defect_categories，"
-            "并只更新自己负责判断的字段。"
-            "当前 Agent 不负责且没有上下文依据的字段必须留空数组或空字符串。"
-            "如果没有明确结果，允许输出空数组或空字符串，不要编造。"
-            "不要输出 Markdown，不要输出多余字段。"
+            "保留 previous_output 中仍有效的 objects 和 defect_categories，只更新自己负责判断的字段。"
+            "无明确依据或不负责的字段留空数组或空字符串，不要编造。"
         )
 
     def postprocess_output(self, output: AgentOutput, result: InspectionResult) -> AgentOutput:
